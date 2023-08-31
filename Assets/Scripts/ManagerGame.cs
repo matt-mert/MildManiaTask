@@ -12,7 +12,7 @@ public class ManagerGame : MonoBehaviour
 
     private List<int> levelsPassedOrNot;
 
-    [HideInInspector]
+    public int continueLevel { get; private set; }
     public int currentLevel { get; private set; }
 
     private void Awake()
@@ -32,15 +32,15 @@ public class ManagerGame : MonoBehaviour
 
     private void Start()
     {
-        bool currentLevelFound = false;
+        bool continueLevelFound = false;
         for (int i = 0; i < levelsList.Count; i++)
         {
             int isComplete = PlayerPrefs.GetInt("LEVEL_" + (i + 1).ToString(), 0);
             levelsPassedOrNot.Add(isComplete);
-            if (isComplete == 1 && !currentLevelFound)
+            if (isComplete == 1 && !continueLevelFound)
             {
-                currentLevelFound = true;
-                currentLevel = i + 1;
+                continueLevelFound = true;
+                continueLevel = i + 1;
             }
         }
     }
@@ -53,6 +53,11 @@ public class ManagerGame : MonoBehaviour
     public void LoadMenuScene()
     {
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public void LoadContinueLevel()
+    {
+        SceneManager.LoadScene("Level" + continueLevel.ToString());
     }
 
     public void LoadCurrentLevelScene()
