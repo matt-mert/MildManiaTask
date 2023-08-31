@@ -29,6 +29,7 @@ public class BallBehaviour : MonoBehaviour, ITappable
     private Rigidbody ballRigidbody;
     private SphereCollider ballCollider;
     private GameObject targetObject;
+    private bool initialFlag;
 
     public enum BallColor
     {
@@ -71,6 +72,7 @@ public class BallBehaviour : MonoBehaviour, ITappable
     private void Start()
     {
         ballState = BallState.IDLE;
+        initialFlag = true;
         StartCoroutine(InitialCoroutine());
     }
 
@@ -112,6 +114,7 @@ public class BallBehaviour : MonoBehaviour, ITappable
         yield return new WaitForSeconds(2);
         ballRigidbody.useGravity = false;
         ballCollider.isTrigger = true;
+        initialFlag = false;
     }
 
     public BallColor GetBallColor()
@@ -126,7 +129,7 @@ public class BallBehaviour : MonoBehaviour, ITappable
 
     public void OnTapBehaviour()
     {
-        if (ballState == BallState.ATTRACTED) return;
+        if (ballState == BallState.ATTRACTED || initialFlag) return;
 
         ballState = BallState.SELECTED;
         ballRigidbody.isKinematic = true;
@@ -154,7 +157,7 @@ public class BallBehaviour : MonoBehaviour, ITappable
     private void HitUnmatchedHandler()
     {
         ballState = BallState.IDLE;
-        ballRigidbody.velocity = Vector3.zero;
+        ballRigidbody.isKinematic = true;
     }
 
     private void ColorFinishedHandler(BallColor color)

@@ -17,8 +17,6 @@ public class InGameUI : MonoBehaviour
     [SerializeField]
     private GameObject successPanel;
 
-    private float tempTimescale;
-
     private void OnEnable()
     {
         ManagerLevel.Instance.OnLevelFailed += LevelFailedHandler;
@@ -67,14 +65,11 @@ public class InGameUI : MonoBehaviour
 
     public void PauseButtonUI()
     {
-        tempTimescale = Time.timeScale;
-        Time.timeScale = 0;
         pausePanel.SetActive(true);
     }
 
     public void ResumeButtonUI()
     {
-        Time.timeScale = tempTimescale;
         pausePanel.SetActive(false);
     }
 

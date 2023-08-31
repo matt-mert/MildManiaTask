@@ -33,7 +33,11 @@ public class ManagerGame : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("Start in ManagerGame was called.");
+        InitialConfigurations();
+    }
+
+    private void InitialConfigurations()
+    {
         bool continueLevelFound = false;
         continueLevel = 1;
         for (int i = 0; i < levelsList.Count; i++)
@@ -58,7 +62,7 @@ public class ManagerGame : MonoBehaviour
     public void SetCurrentLevelPassed()
     {
         if (levelsPassedOrNot[currentLevel - 1] == true) return;
-        levelsPassedOrNot[currentLevel] = true;
+        levelsPassedOrNot[currentLevel - 1] = true;
         PlayerPrefs.SetInt("LEVEL_" + currentLevel.ToString(), 1);
         continueLevel++;
     }
@@ -93,7 +97,16 @@ public class ManagerGame : MonoBehaviour
 
     public void LoadLevelScene(int level)
     {
+        if (levelsPassedOrNot[level - 1] == false && continueLevel != level) return;
         currentLevel = level;
         SceneManager.LoadScene(level);
+    }
+
+    public void ClearGameData()
+    {
+        PlayerPrefs.DeleteAll();
+        levelsPassedOrNot = new List<bool>();
+        InitialConfigurations();
+        ReloadActiveScene();
     }
 }
