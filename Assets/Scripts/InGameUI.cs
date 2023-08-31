@@ -35,7 +35,6 @@ public class InGameUI : MonoBehaviour
         int currentLevel = ManagerGame.Instance.currentLevel;
         levelText.text = "LEVEL " + currentLevel.ToString();
         string scaleText = currentSO.levelTimescale.ToString();
-        if (scaleText.Contains(".")) scaleText = scaleText.Split(".")[0] + scaleText.Split(".")[1][0];
         timescaleText.text = "X" + scaleText;
         
         pausePanel.SetActive(false);

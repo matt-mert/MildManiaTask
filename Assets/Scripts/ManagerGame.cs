@@ -91,8 +91,15 @@ public class ManagerGame : MonoBehaviour
 
     public void LoadNextLevel()
     {
-        currentLevel++;
-        SceneManager.LoadScene("Level" + currentLevel.ToString());
+        if (currentLevel == levelsList.Count)
+        {
+            LoadMenuScene();
+        }
+        else
+        {
+            currentLevel++;
+            SceneManager.LoadScene("Level" + currentLevel.ToString());
+        }
     }
 
     public void LoadLevelScene(int level)
