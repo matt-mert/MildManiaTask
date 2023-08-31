@@ -12,11 +12,11 @@ GameObject:
   - component: {fileID: 5278762944486206855}
   - component: {fileID: 3908140110328308404}
   - component: {fileID: 3263401814347789106}
-  - component: {fileID: -2004012313471820906}
+  - component: {fileID: 4585533901975375635}
   - component: {fileID: 6652622267939625399}
   - component: {fileID: 8808568946219630219}
   m_Layer: 6
-  m_Name: RedBallPrefab
+  m_Name: GreenBallPrefab
   m_TagString: BallObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d928079c8100ddf4a866d311c7191eab, type: 2}
+  - {fileID: 2100000, guid: ea1fb044b9745b8469a2fe7b81810fea, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -108,7 +108,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.51
   m_Center: {x: 0, y: 0, z: 0}
---- !u!135 &-2004012313471820906
+--- !u!135 &4585533901975375635
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beb9fee6532da6a4cb7c24e85333e2ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myColor: 0
-  particlesPrefab: {fileID: 8108433475686875052, guid: ed25f51bfffa8744ab5e8e9b49843515,
+  myColor: 2
+  particlesPrefab: {fileID: 8108433475686875052, guid: 8a1980b9120bf234885663298e4d1fac,
     type: 3}
   attractedSpeed: 10

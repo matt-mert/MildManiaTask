@@ -12,7 +12,7 @@ public class LevelSO : ScriptableObject
     [Tooltip("Put every ball object of the level in this list.")]
     public List<BallSO> ballObjectsInLevel;
 
-    [Range(0.25f, 4f)]
+    [Range(0.1f, 4f)]
     [Tooltip("The multiplier of the flow of time.")]
     public float levelTimescale;
 

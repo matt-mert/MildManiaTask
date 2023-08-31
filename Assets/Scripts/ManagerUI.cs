@@ -46,21 +46,22 @@ public class ManagerUI : MonoBehaviour
 
     private void OnEnable()
     {
-        pausePanel.SetActive(false);
-        failedPanel.SetActive(false);
-        successPanel.SetActive(false);
+        BallBehaviour.OnHitUnmatched += OnHitUnmatchedHandler;
     }
 
     private void OnDisable()
     {
-        pausePanel.SetActive(false);
-        failedPanel.SetActive(false);
-        successPanel.SetActive(false);
+        BallBehaviour.OnHitUnmatched -= OnHitUnmatchedHandler;
+    }
+
+    private void OnHitUnmatchedHandler()
+    {
+        failedPanel.SetActive(true);
     }
 
     public void RetryButtonUI()
     {
-
+        managerGame.ReloadActiveScene();
     }
 
     public void PauseButtonUI()

@@ -7,53 +7,89 @@ public class BallBehaviour : MonoBehaviour, ITappable
     public static event OnBallTappedDelegate OnBallTapped;
     public delegate void OnHitUnmatchedDelegate();
     public static event OnHitUnmatchedDelegate OnHitUnmatched;
-    public delegate void OnHitMatchedDelegate();
+    public delegate void OnHitMatchedDelegate(BallColor color);
     public static event OnHitMatchedDelegate OnHitMatched;
 
     [SerializeField]
+    private BallColor myColor;
+
+    [SerializeField]
+    [Tooltip("The particles to be initiated upon popping.")]
     private GameObject particlesPrefab;
 
-    private BallSO ballProperties;
+    [SerializeField]
+    [Tooltip("The speed during the attracted movement.")]
+    private float attractedSpeed;
+
+    public BallState ballState { get; private set; }
+
     private Rigidbody ballRigidbody;
-    private float ballSpeed;
-    private bool selectedFlag;
+    private GameObject targetObject;
+
+    public enum BallColor
+    {
+        RED,
+        BLUE,
+        GREEN,
+        PINK,
+        WHITE,
+        BLACK,
+    }
+
+    public enum BallState
+    {
+        IDLE,
+        SELECTED,
+        ATTRACTED,
+    }
 
     private void Awake()
     {
         ballRigidbody = GetComponent<Rigidbody>();
+        targetObject = null;
     }
 
     private void OnEnable()
     {
         OnBallTapped += BallTappedHandler;
+        OnHitUnmatched += HitUnmatchedHandler;
     }
 
     private void OnDisable()
     {
         OnBallTapped -= BallTappedHandler;
+        OnHitUnmatched -= HitUnmatchedHandler;
     }
 
     private void Start()
     {
-        ballSpeed = 10;
+        ballState = BallState.IDLE;
     }
 
     private void Update()
     {
-        if (!ballProperties.isMoving) return;
+        if (ballState == BallState.ATTRACTED)
+        {
+            Vector3 direction = (targetObject.transform.position - transform.position).normalized;
+            ballRigidbody.velocity = direction * attractedSpeed;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("BallObject")) return;
-        if (selectedFlag) return;
+        if (ballState == BallState.SELECTED) return;
 
-        BallSO otherSO = other.gameObject.GetComponent<BallBehaviour>().GetBallProperties();
-        if (otherSO.ballColor == ballProperties.ballColor)
+        BallBehaviour otherBehaviour = other.gameObject.GetComponent<BallBehaviour>();
+        BallColor otherColor = otherBehaviour.GetBallColor();
+        if (otherColor == myColor)
         {
-            Instantiate(particlesPrefab, transform.position, Quaternion.identity);
-            OnHitMatched?.Invoke();
-            Destroy(gameObject);
+            if (otherBehaviour.ballState == BallState.SELECTED)
+            {
+                Instantiate(particlesPrefab, transform.position, Quaternion.identity);
+                OnHitMatched?.Invoke(myColor);
+                Destroy(gameObject);
+            }
         }
         else
         {
@@ -61,19 +97,17 @@ public class BallBehaviour : MonoBehaviour, ITappable
         }
     }
 
-    public BallSO GetBallProperties()
+    public BallColor GetBallColor()
     {
-        return ballProperties;
-    }
-
-    public void SetBallProperties(BallSO ballSO)
-    {
-        ballProperties = ballSO;
+        return myColor;
     }
 
     public void OnTapBehaviour()
     {
-        selectedFlag = true;
+        if (ballState == BallState.ATTRACTED) return;
+
+        ballState = BallState.SELECTED;
+        ballRigidbody.isKinematic = true;
         OnBallTapped?.Invoke(gameObject);
     }
 
@@ -83,10 +117,21 @@ public class BallBehaviour : MonoBehaviour, ITappable
         
         if (caller == gameObject) return;
 
-        BallSO.BallColor callerColor = caller.GetComponent<BallBehaviour>().GetBallProperties().ballColor;
-        if (callerColor != ballProperties.ballColor) return;
+        BallBehaviour callerBehaviour = caller.GetComponent<BallBehaviour>();
+        BallColor callerColor = callerBehaviour.GetBallColor();
 
+        if (callerColor != myColor) return;
+
+        ballState = BallState.ATTRACTED;
+
+        targetObject = caller;
         Vector3 direction = (caller.transform.position - transform.position).normalized;
-        ballRigidbody.velocity = direction * ballSpeed;
+        ballRigidbody.velocity = direction * attractedSpeed;
+    }
+
+    private void HitUnmatchedHandler()
+    {
+        ballState = BallState.IDLE;
+        ballRigidbody.velocity = Vector3.zero;
     }
 }

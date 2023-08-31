@@ -26,6 +26,8 @@ public class ManagerGame : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        Application.targetFrameRate = 60;
     }
 
     private void Start()
@@ -43,8 +45,23 @@ public class ManagerGame : MonoBehaviour
         }
     }
 
+    public void ReloadActiveScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     public void LoadMenuScene()
     {
-        SceneManager.LoadScene("MenuScene");
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void LoadCurrentLevelScene()
+    {
+        SceneManager.LoadScene(currentLevel);
+    }
+
+    public void LoadLevelScene(int level)
+    {
+        SceneManager.LoadScene(level);
     }
 }
