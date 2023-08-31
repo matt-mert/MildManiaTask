@@ -12,6 +12,7 @@ public class MainMenuUI : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("Start in MainMenuUI was called.");
         foreach (Transform child in levelsContent.transform)
         {
             int levelNumber = int.Parse(child.name.Split("_")[1]);
@@ -56,5 +57,11 @@ public class MainMenuUI : MonoBehaviour
     public void LoadLevelButton(int level)
     {
         ManagerGame.Instance.LoadLevelScene(level);
+    }
+
+    public void ClearPlayerPrefs()
+    {
+        PlayerPrefs.DeleteAll();
+        ManagerGame.Instance.ReloadActiveScene();
     }
 }

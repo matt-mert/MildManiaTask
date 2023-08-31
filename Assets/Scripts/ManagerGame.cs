@@ -57,6 +57,7 @@ public class ManagerGame : MonoBehaviour
 
     public void SetCurrentLevelPassed()
     {
+        if (levelsPassedOrNot[currentLevel - 1] == true) return;
         levelsPassedOrNot[currentLevel] = true;
         PlayerPrefs.SetInt("LEVEL_" + currentLevel.ToString(), 1);
         continueLevel++;
