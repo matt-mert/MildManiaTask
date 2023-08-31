@@ -1,8 +1,11 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class BallBehaviour : MonoBehaviour, ITappable
 {
+    // Dependency to ManagerLevel class.
+
     public delegate void OnBallTappedDelegate(GameObject obj);
     public static event OnBallTappedDelegate OnBallTapped;
     public delegate void OnHitUnmatchedDelegate();
@@ -24,6 +27,7 @@ public class BallBehaviour : MonoBehaviour, ITappable
     public BallState ballState { get; private set; }
 
     private Rigidbody ballRigidbody;
+    private SphereCollider ballCollider;
     private GameObject targetObject;
 
     public enum BallColor
@@ -46,17 +50,20 @@ public class BallBehaviour : MonoBehaviour, ITappable
     private void Awake()
     {
         ballRigidbody = GetComponent<Rigidbody>();
+        ballCollider = GetComponent<SphereCollider>();
         targetObject = null;
     }
 
     private void OnEnable()
     {
+        ManagerLevel.Instance.OnColorFinished += ColorFinishedHandler;
         OnBallTapped += BallTappedHandler;
         OnHitUnmatched += HitUnmatchedHandler;
     }
 
     private void OnDisable()
     {
+        ManagerLevel.Instance.OnColorFinished -= ColorFinishedHandler;
         OnBallTapped -= BallTappedHandler;
         OnHitUnmatched -= HitUnmatchedHandler;
     }
@@ -64,6 +71,7 @@ public class BallBehaviour : MonoBehaviour, ITappable
     private void Start()
     {
         ballState = BallState.IDLE;
+        StartCoroutine(InitialCoroutine());
     }
 
     private void Update()
@@ -97,9 +105,23 @@ public class BallBehaviour : MonoBehaviour, ITappable
         }
     }
 
+    private IEnumerator InitialCoroutine()
+    {
+        ballCollider.isTrigger = false;
+        ballRigidbody.useGravity = true;
+        yield return new WaitForSeconds(2);
+        ballRigidbody.useGravity = false;
+        ballCollider.isTrigger = true;
+    }
+
     public BallColor GetBallColor()
     {
         return myColor;
+    }
+
+    public void MultiplyAttractedSpeed(float amount)
+    {
+        attractedSpeed *= amount;
     }
 
     public void OnTapBehaviour()
@@ -133,5 +155,14 @@ public class BallBehaviour : MonoBehaviour, ITappable
     {
         ballState = BallState.IDLE;
         ballRigidbody.velocity = Vector3.zero;
+    }
+
+    private void ColorFinishedHandler(BallColor color)
+    {
+        if (color == myColor && ballState == BallState.SELECTED)
+        {
+            Instantiate(particlesPrefab, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
     }
 }

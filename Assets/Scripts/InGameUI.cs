@@ -3,7 +3,8 @@ using TMPro;
 
 public class InGameUI : MonoBehaviour
 {
-    private ManagerGame managerGame;
+    // Dependency to ManagerGame class.
+    // Dependecy to ManagerLevel class.
 
     [SerializeField]
     private TextMeshProUGUI levelText;
@@ -18,38 +19,50 @@ public class InGameUI : MonoBehaviour
 
     private float tempTimescale;
 
-    private void Awake()
-    {
-        managerGame = ManagerGame.Instance;
-    }
-
     private void OnEnable()
     {
-        BallBehaviour.OnHitUnmatched += OnHitUnmatchedHandler;
+        ManagerLevel.Instance.OnLevelFailed += LevelFailedHandler;
+        ManagerLevel.Instance.OnLevelSuccess += LevelSuccessHandler;
     }
 
     private void OnDisable()
     {
-        BallBehaviour.OnHitUnmatched -= OnHitUnmatchedHandler;
+        ManagerLevel.Instance.OnLevelFailed -= LevelFailedHandler;
+        ManagerLevel.Instance.OnLevelSuccess -= LevelSuccessHandler;
     }
 
     private void Start()
     {
-        levelText.text = "LEVEL 1";
-        timescaleText.text = "X1";
+        LevelSO currentSO = ManagerGame.Instance.GetCurrentLevelSO();
+        int currentLevel = ManagerGame.Instance.currentLevel;
+        levelText.text = "LEVEL " + currentLevel.ToString();
+        string scaleText = currentSO.levelTimescale.ToString();
+        if (scaleText.Contains(".")) scaleText = scaleText.Split(".")[0] + scaleText.Split(".")[1][0];
+        timescaleText.text = "X" + scaleText;
+        
         pausePanel.SetActive(false);
         failedPanel.SetActive(false);
         successPanel.SetActive(false);
     }
 
-    private void OnHitUnmatchedHandler()
+    private void LevelFailedHandler()
     {
         failedPanel.SetActive(true);
     }
 
+    private void LevelSuccessHandler()
+    {
+        successPanel.SetActive(true);
+    }
+
+    public void NextButtonUI()
+    {
+        ManagerGame.Instance.LoadNextLevel();
+    }
+
     public void RetryButtonUI()
     {
-        managerGame.ReloadActiveScene();
+        ManagerGame.Instance.ReloadActiveScene();
     }
 
     public void PauseButtonUI()
@@ -67,6 +80,6 @@ public class InGameUI : MonoBehaviour
 
     public void MenuButtonUI()
     {
-        managerGame.LoadMenuScene();
+        ManagerGame.Instance.LoadMenuScene();
     }
 }

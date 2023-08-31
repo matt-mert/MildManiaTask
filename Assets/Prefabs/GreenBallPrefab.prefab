@@ -11,10 +11,9 @@ GameObject:
   - component: {fileID: 1651007762746753432}
   - component: {fileID: 5278762944486206855}
   - component: {fileID: 3908140110328308404}
-  - component: {fileID: 3263401814347789106}
   - component: {fileID: 4585533901975375635}
   - component: {fileID: 6652622267939625399}
-  - component: {fileID: 8808568946219630219}
+  - component: {fileID: 5453694531408393250}
   m_Layer: 6
   m_Name: GreenBallPrefab
   m_TagString: BallObject
@@ -87,27 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &3263401814347789106
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7338768265704765717}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.51
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &4585533901975375635
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -123,7 +101,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -156,7 +134,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &8808568946219630219
+--- !u!114 &5453694531408393250
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
