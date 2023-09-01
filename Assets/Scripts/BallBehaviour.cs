@@ -24,11 +24,33 @@ public class BallBehaviour : MonoBehaviour, ITappable
     [Tooltip("The speed during the attracted movement.")]
     private float attractedSpeed;
 
+    [SerializeField]
+    private bool isMoving;
+
+    [Header("Fill the remaining sections if ball is moving.")]
+
+    [SerializeField]
+    [Range(1f, 10f)]
+    private float movingSpeed;
+    [SerializeField]
+    [Range(0f, 2f)]
+    private float movingDuration;
+
+    [Header("Program normalizes the direction automatically.")]
+
+    [SerializeField]
+    private float ballDirectionX;
+    [SerializeField]
+    private float ballDirectionY;
+
     public BallState ballState { get; private set; }
 
     private Rigidbody ballRigidbody;
     private SphereCollider ballCollider;
     private GameObject targetObject;
+    private Vector3 ballDirection;
+    private Coroutine movementCoroutine;
+    private bool isComingBack;
     private bool initialFlag;
 
     public enum BallColor
@@ -72,7 +94,18 @@ public class BallBehaviour : MonoBehaviour, ITappable
     private void Start()
     {
         ballState = BallState.IDLE;
+        movementCoroutine = null;
+        isComingBack = false;
         initialFlag = true;
+        if (isMoving)
+        {
+            ballDirection = new Vector3(ballDirectionX, 0f, ballDirectionY).normalized;
+        }
+        else
+        {
+            ballDirection = Vector3.zero;
+        }
+
         StartCoroutine(InitialCoroutine());
     }
 
@@ -115,6 +148,24 @@ public class BallBehaviour : MonoBehaviour, ITappable
         ballRigidbody.useGravity = false;
         ballCollider.isTrigger = true;
         initialFlag = false;
+        if (isMoving) movementCoroutine = StartCoroutine(MovementCoroutine());
+    }
+
+    private IEnumerator MovementCoroutine()
+    {
+        while (isMoving)
+        {
+            if (isComingBack)
+            {
+                ballRigidbody.velocity = ballDirection * movingSpeed * -1f;
+            }
+            else
+            {
+                ballRigidbody.velocity = ballDirection * movingSpeed;
+            }
+            yield return new WaitForSeconds(movingDuration);
+            isComingBack = !isComingBack;
+        }
     }
 
     public BallColor GetBallColor()
@@ -147,6 +198,7 @@ public class BallBehaviour : MonoBehaviour, ITappable
 
         if (callerColor != myColor) return;
 
+        if (movementCoroutine != null) StopCoroutine(movementCoroutine);
         ballState = BallState.ATTRACTED;
 
         targetObject = caller;
